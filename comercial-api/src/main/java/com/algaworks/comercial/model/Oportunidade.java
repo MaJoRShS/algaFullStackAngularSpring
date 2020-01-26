@@ -2,10 +2,28 @@ package com.algaworks.comercial.model;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+//Aqui só de deixar assim o spring sabe que é uma entidade de banco de dados isso é JPA
+@Entity
 public class Oportunidade {
 
+	// Aqui é para mostrar que isso é um ID
+	@Id
+
+	// e isso é para mostrar que é um auto incremente do banco
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	// Aqui segundo a lenda não precisa mais do @Column porque parece que o JPA
+	// mapea tudo.
+	@Column(name = "nome_prospecto")
 	private String nomeProspecto;
+
 	private String descricao;
 	private BigDecimal valor;
 
