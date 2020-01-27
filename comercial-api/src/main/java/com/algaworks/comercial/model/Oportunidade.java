@@ -7,6 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 //Aqui só de deixar assim o spring sabe que é uma entidade de banco de dados isso é JPA
 @Entity
@@ -21,10 +24,19 @@ public class Oportunidade {
 
 	// Aqui segundo a lenda não precisa mais do @Column porque parece que o JPA
 	// mapea tudo.
+	@NotEmpty
+	@Size(max = 80)
 	@Column(name = "nome_prospecto")
 	private String nomeProspecto;
 
+	// Essas novas anotações são para validação de campo, aqui eu digo que ele não
+	// pode ser nulo e nem maior que 200 por exemplo
+	@NotEmpty
+	@Size(max = 200)
 	private String descricao;
+
+	// aqui eu digo que ele precisa ser no minimo 0
+	@Min(0)
 	private BigDecimal valor;
 
 	public Long getId() {

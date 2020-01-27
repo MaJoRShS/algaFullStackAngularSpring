@@ -3,6 +3,8 @@ package com.algaworks.comercial.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.algaworks.comercial.model.Oportunidade;
 import com.algaworks.comercial.repository.OportunidadeRepository;
@@ -47,7 +50,7 @@ public class OportunidadeController {
 	@GetMapping
 	public List<Oportunidade> listar() {
 		return oportunidades.findAll();
-	}	
+	}
 
 	// Essa aqui é uma forma de buscar os resultados por ID, mais tem um problema
 	// que ela retorna 200 mesmo quando está nullo a resposta
@@ -69,14 +72,29 @@ public class OportunidadeController {
 		return ResponseEntity.ok(oportunidade.get());
 	}
 
-	
-	//Aqui eu to conseguindo inserir um novo registro no banco de dados, bem simples apenas mandando um JSON na chamada
+	// Aqui eu to conseguindo inserir um novo registro no banco de dados, bem
+	// simples apenas mandando um JSON na chamada
 	@PostMapping
-	
-	//Essa anotação é responsavel por traser a informação de status 201 informando que é um created e não apenas uma requisição de sucesso.
+
+	// Essa anotação é responsavel por traser a informação de status 201 informando
+	// que é um created e não apenas uma requisição de sucesso.
+
+	// Aqui acrescentei o @Valid que permite fazer validações nos campos antes de
+	// salvar minha requisição, e ainda formata para devolver como resposta.
 	@ResponseStatus(HttpStatus.CREATED)
-	public Oportunidade adcionar(@RequestBody Oportunidade oportunidade)	{
+	public Oportunidade adcionar(@Valid @RequestBody Oportunidade oportunidade) {
+
+		Optional<Oportunidade> oportunidadeExistente = oportunidades
+				.findByDescricaoAndNomeProspecto(oportunidade.getDescricao(), oportunidade.getNomeProspecto());
+		
+		if(oportunidadeExistente.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Já existe uma oportunidade para este prospecto com a mesma descrição");
+		}
+
 		return oportunidades.save(oportunidade);
+		
+		
+		//Mandou implementar o resto do crud por conta propria
 	}
-	
+
 }

@@ -1,0 +1,10 @@
+package com.algaworks.comercial.model;
+
+public class Oportunidade {
+	
+	private Long id;
+	private String nomePospecto;
+	private String descricao;
+	private BigDecimal valor;
+
+}
